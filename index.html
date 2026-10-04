@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Miami to Portland RV Trip</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root { --ink:#18322c; --muted:#5b6d68; --paper:#fffdf8; --card:#ffffff; --line:#dce6e1; --green:#1d785b; --gold:#d5a02d; --warn:#fff4d8; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#eef3ef; font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+    .page { max-width:1120px; margin:auto; background:var(--paper); min-height:100vh; box-shadow:0 8px 34px #20352e18; }
+    header { padding:36px 42px 28px; background:linear-gradient(135deg,#133f34,#23795e); color:white; }
+    h1 { margin:0 0 7px; font-size:clamp(28px,5vw,50px); letter-spacing:-1.6px; line-height:1.05; }
+    header p { margin:0; opacity:.86; font-size:17px; }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:24px; }
+    .stat { padding:13px 15px; border:1px solid #ffffff30; background:#ffffff12; border-radius:12px; }
+    .stat strong { display:block; font-size:22px; }
+    .stat span { font-size:12px; text-transform:uppercase; letter-spacing:.7px; opacity:.78; }
+    main { padding:28px 42px 44px; }
+    #map { height:470px; border-radius:15px; border:1px solid var(--line); background:#e6ede9; }
+    .notice { margin:18px 0 26px; padding:14px 16px; border-left:5px solid var(--gold); background:var(--warn); border-radius:8px; }
+    h2 { margin:28px 0 12px; font-size:24px; }
+    .itinerary { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .stop { display:grid; grid-template-columns:38px 1fr auto; gap:10px; align-items:center; padding:12px; border:1px solid var(--line); border-radius:11px; background:var(--card); break-inside:avoid; }
+    .num { width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:var(--green); color:white; font-weight:800; }
+    .stop strong { display:block; }
+    .stop small { color:var(--muted); }
+    .stop a { color:var(--green); text-decoration:none; font-weight:700; font-size:13px; white-space:nowrap; }
+    .long { border-color:#e4bb5a; background:#fffaf0; }
+    footer { margin-top:30px; color:var(--muted); font-size:12px; }
+    @media (max-width:760px) { header,main{padding-left:18px;padding-right:18px}.stats{grid-template-columns:1fr 1fr}.itinerary{grid-template-columns:1fr}#map{height:380px}.stop{grid-template-columns:38px 1fr}.stop a{grid-column:2} }
+    @media print {
+      @page { size:letter; margin:.38in; }
+      body,.page { background:white; box-shadow:none; }
+      header { padding:22px 26px 19px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      h1 { font-size:34px; }
+      .stats { margin-top:15px; }
+      .stat { padding:8px 10px; }
+      .stat strong { font-size:17px; }
+      main { padding:18px 26px 24px; }
+      #map { height:310px; }
+      .notice { margin:12px 0 17px; padding:9px 12px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      h2 { margin:14px 0 8px; font-size:19px; }
+      .itinerary { gap:6px; }
+      .stop { padding:7px 9px; font-size:11px; line-height:1.22; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .num { width:25px; height:25px; }
+      .stop a { display:none; }
+      footer { margin-top:15px; font-size:9px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Miami to Portland</h1>
+    <p>Final RV campground route · Florida to Oregon</p>
+    <div class="stats">
+      <div class="stat"><strong>16</strong><span>RV campgrounds</span></div>
+      <div class="stat"><strong>4,329 mi</strong><span>planned route</span></div>
+      <div class="stat"><strong>84h 40m</strong><span>estimated drive</span></div>
+      <div class="stat"><strong>27 ft × 12 ft</strong><span>RV profile</span></div>
+    </div>
+  </header>
+  <main>
+    <div id="map" aria-label="Map of the RV trip"></div>
+    <div class="notice"><strong>Safety note:</strong> This is a planning overview, not final turn-by-turn RV navigation. Recheck bridge clearances, grades, closures, campground availability, and the RV's loaded width and weight before driving. The longest planned days are Louisiana → Austin (9h 37m) and Zion → Big Sur (12h 33m).</div>
+    <h2>Campground itinerary</h2>
+    <div class="itinerary" id="itinerary"></div>
+    <footer>Route saved from the final Kamptribe draft on October 4, 2026. Drive times and mileage are estimates. Map data © OpenStreetMap contributors; overview routing by OSRM.</footer>
+  </main>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const stops = [
+  {name:'Miami base — Larry & Penny Thompson Campground',lat:25.5984062,lng:-80.3940878},
+  {name:'Kennedy Space Center base — Manatee Hammock Campground',lat:28.5041096,lng:-80.7815711,drive:'4h 19m · 227 mi'},
+  {name:'Jennings KOA Holiday',lat:30.5959341,lng:-83.1238475,drive:'4h 26m · 238 mi'},
+  {name:'Gulf Shores — Gulf State Park Campground',lat:30.264266,lng:-87.644265,drive:'6h 4m · 302 mi'},
+  {name:'Mississippi — Davis Bayou Campground',lat:30.3988806,lng:-88.7865166,drive:'2h 20m · 103 mi'},
+  {name:'Louisiana — Bayou Segnette State Park Campground',lat:29.8878135,lng:-90.1638767,drive:'2h 14m · 109 mi'},
+  {name:'Austin — Austin East KOA Holiday',lat:30.277617,lng:-97.611735,drive:'9h 37m · 498 mi',long:true},
+  {name:'Fort Stockton RV Park',lat:30.8939893,lng:-102.7952871,drive:'6h 1m · 345 mi'},
+  {name:'Las Cruces KOA Journey',lat:32.2929157,lng:-106.8592108,drive:'4h 57m · 294 mi'},
+  {name:'Gallup — USA RV Park',lat:35.5067755,lng:-108.8107673,drive:'6h 12m · 348 mi'},
+  {name:'Zion west entrance — Zion River Resort RV Park',lat:37.2026827,lng:-113.1770327,drive:'7h 58m · 384 mi',long:true},
+  {name:'Big Sur — Big Sur Campground & Cabins',lat:36.266507,lng:-121.8062049,drive:'12h 33m · 645 mi',long:true},
+  {name:'San Francisco — San Francisco RV Resort',lat:37.6458357,lng:-122.493042,drive:'3h · 135 mi'},
+  {name:'Redwoods — Ancient Redwoods RV Park',lat:40.4169794,lng:-123.963169,drive:'5h 11m · 242 mi'},
+  {name:'Southern Oregon — Seven Feathers RV Resort',lat:42.9359343,lng:-123.2948486,drive:'5h 34m · 250 mi'},
+  {name:'Portland — Columbia River RV Park',lat:45.599732,lng:-122.6537004,drive:'4h 14m · 210 mi'}
+];
+
+document.getElementById('itinerary').innerHTML = stops.map((s,i)=>`<div class="stop ${s.long?'long':''}"><span class="num">${i+1}</span><div><strong>${s.name}</strong><small>${i===0?'Start · 1 night':s.drive+' · 1 night'}${s.long?' · Long day':''}</small></div><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}">Map</a></div>`).join('');
+
+const map = L.map('map',{zoomControl:true,scrollWheelZoom:false});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+const points = stops.map(s=>[s.lat,s.lng]);
+stops.forEach((s,i)=>{
+  const icon=L.divIcon({className:'',html:`<div style="width:27px;height:27px;border-radius:50%;background:#1d785b;border:2px solid white;box-shadow:0 1px 5px #0007;color:white;display:grid;place-items:center;font:bold 12px system-ui">${i+1}</div>`,iconSize:[27,27],iconAnchor:[13,13]});
+  L.marker([s.lat,s.lng],{icon}).addTo(map).bindPopup(`<strong>${i+1}. ${s.name}</strong>${s.drive?'<br>'+s.drive:''}`);
+});
+map.fitBounds(points,{padding:[30,30]});
+
+const coordString = stops.map(s=>`${s.lng},${s.lat}`).join(';');
+fetch(`https://router.project-osrm.org/route/v1/driving/${coordString}?overview=full&geometries=geojson&steps=false`)
+  .then(r=>r.json()).then(d=>{
+    if(d.routes?.[0]) L.geoJSON(d.routes[0].geometry,{style:{color:'#d59b24',weight:4,opacity:.9}}).addTo(map).bringToBack();
+  }).catch(()=>L.polyline(points,{color:'#d59b24',weight:4,dashArray:'8 7'}).addTo(map));
+</script>
+</body>
+</html>

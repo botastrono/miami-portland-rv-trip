@@ -1,0 +1,24 @@
+{
+  "source": "Kamptribe anonymous local planner",
+  "savedAt": "2026-10-04",
+  "rig": {"lengthFt": 27, "heightFt": 12},
+  "totals": {"distanceMiles": 4329, "driveTime": "84h 40m", "campgrounds": 16},
+  "stops": [
+    {"name":"Miami base — Larry & Penny Thompson Campground","lat":25.5984062,"lng":-80.3940878,"nights":1},
+    {"name":"Kennedy Space Center base — Manatee Hammock Campground","lat":28.5041096,"lng":-80.7815711,"nights":1,"distanceKm":364.6126,"durationSec":15569},
+    {"name":"Jennings KOA Holiday","lat":30.5959341,"lng":-83.1238475,"nights":1,"distanceKm":383.5629,"durationSec":15967.7},
+    {"name":"Gulf Shores — Gulf State Park Campground","lat":30.264266,"lng":-87.644265,"nights":1,"distanceKm":485.9113,"durationSec":21838.7},
+    {"name":"Mississippi — Davis Bayou Campground","lat":30.3988806,"lng":-88.7865166,"nights":1,"distanceKm":165.1515,"durationSec":8388.7},
+    {"name":"Louisiana — Bayou Segnette State Park Campground","lat":29.8878135,"lng":-90.1638767,"nights":1,"distanceKm":175.5718,"durationSec":8063},
+    {"name":"Austin — Austin East KOA Holiday","lat":30.277617,"lng":-97.611735,"nights":1,"distanceKm":800.9065,"durationSec":34622.7},
+    {"name":"Fort Stockton RV Park","lat":30.8939893,"lng":-102.7952871,"nights":1,"distanceKm":555.0546,"durationSec":21653.3},
+    {"name":"Las Cruces KOA Journey","lat":32.2929157,"lng":-106.8592108,"nights":1,"distanceKm":473.815,"durationSec":17847.8},
+    {"name":"Gallup — USA RV Park","lat":35.5067755,"lng":-108.8107673,"nights":1,"distanceKm":559.835,"durationSec":22329.5},
+    {"name":"Zion west entrance — Zion River Resort RV Park","lat":37.2026827,"lng":-113.1770327,"nights":1,"distanceKm":618.172,"durationSec":28676.4},
+    {"name":"Big Sur — Big Sur Campground & Cabins","lat":36.266507,"lng":-121.8062049,"nights":1,"mode":"scenic","distanceKm":1038.3232,"durationSec":45186.8},
+    {"name":"San Francisco — San Francisco RV Resort","lat":37.6458357,"lng":-122.493042,"nights":1,"distanceKm":216.9023,"durationSec":10778.6},
+    {"name":"Redwoods — Ancient Redwoods RV Park","lat":40.4169794,"lng":-123.963169,"nights":1,"distanceKm":389.5336,"durationSec":18670.8},
+    {"name":"Southern Oregon — Seven Feathers RV Resort","lat":42.9359343,"lng":-123.2948486,"nights":1,"distanceKm":401.6252,"durationSec":20034.3},
+    {"name":"Portland — Columbia River RV Park","lat":45.599732,"lng":-122.6537004,"nights":1,"distanceKm":338.5464,"durationSec":15228.1}
+  ]
+}
