@@ -102,11 +102,18 @@ stops.forEach((s,i)=>{
   L.marker([s.lat,s.lng],{icon}).addTo(map).bindPopup(`<strong>${i+1}. ${s.name}</strong>${s.drive?'<br>'+s.drive:''}`);
 });
 map.fitBounds(points,{padding:[30,30]});
+window.addEventListener('beforeprint',()=>{
+  map.invalidateSize();
+  map.fitBounds(points,{padding:[18,18]});
+});
 
 const coordString = stops.map(s=>`${s.lng},${s.lat}`).join(';');
 fetch(`https://router.project-osrm.org/route/v1/driving/${coordString}?overview=full&geometries=geojson&steps=false`)
   .then(r=>r.json()).then(d=>{
-    if(d.routes?.[0]) L.geoJSON(d.routes[0].geometry,{style:{color:'#d59b24',weight:4,opacity:.9}}).addTo(map).bringToBack();
+    if(d.routes?.[0]) {
+      L.geoJSON(d.routes[0].geometry,{style:{color:'#d59b24',weight:4,opacity:.9}}).addTo(map).bringToBack();
+      setTimeout(()=>{ map.invalidateSize(); map.fitBounds(points,{padding:[25,25]}); },250);
+    }
   }).catch(()=>L.polyline(points,{color:'#d59b24',weight:4,dashArray:'8 7'}).addTo(map));
 </script>
 </body>
